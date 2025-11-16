@@ -31,16 +31,10 @@ Deployment: Railway sau Render
 
 Structura echipei (3 persoane)
 
-Persoana 1 – Documentație, baza de date, dashboard
+Rachim Bianca – Documentație, baza de date, dashboard
 
-Persoana 2 – Backend API, gestionarea proiectelor
+Sfetcu Vlad – Backend API, gestionarea proiectelor
 
-Persoana 3 – Frontend UI, gestionarea bug-urilor
+Simion David – Frontend UI, gestionarea bug-urilor
 
-Etape
 
-16.11.2025 – Specificații detaliate și repo GitHub
-
-06.12.2025 – Serviciu REST API funcțional și instrucțiuni de rulare
-
-Ultimul seminar – Aplicație completă și prezentare (demo)
