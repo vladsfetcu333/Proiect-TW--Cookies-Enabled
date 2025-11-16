@@ -31,7 +31,7 @@ Deployment: Railway sau Render
 
 Structura echipei
 
-Rachim Bianca – Documentație, baza de date, dashboard
+Rachina Bianca – Documentație, baza de date, dashboard
 
 Sfetcu Vlad – Backend API, gestionarea proiectelor
 
