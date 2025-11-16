@@ -29,7 +29,7 @@ Bază de date: PostgreSQL
 
 Deployment: Railway sau Render
 
-Structura echipei (3 persoane)
+Structura echipei
 
 Rachim Bianca – Documentație, baza de date, dashboard
 
