@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+enum Role {
+  MP
+  TST
+}
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Priority {
+  P1
+  P2
+  P3
+  P4
+}
+
+enum BugStatus {
+  OPEN
+  ASSIGNED
+  FIXED
+}
+
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  passwordHash    String
+  name            String?
+  createdAt       DateTime @default(now())
+
+  memberships     ProjectMember[]
+  createdProjects Project[] @relation("CreatedProjects")
+
+  reportedBugs    Bug[] @relation("ReportedBugs")
+  assignedBugs    Bug[] @relation("AssignedBugs")
+  statusUpdates   BugStatusUpdate[]
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  name      String
+  repoUrl   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdByUserId String
+  createdBy User @relation("CreatedProjects", fields: [createdByUserId], references: [id])
+
+  members   ProjectMember[]
+  bugs      Bug[]
+}
+
+model Bug {
+  id                String    @id @default(cuid())
+  projectId          String
+  createdByUserId    String
+
+  severity           Severity
+  priority           Priority
+  description        String
+  commitUrlReported  String
+
+  assignedToUserId   String?
+  status             BugStatus @default(OPEN)
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  project            Project @relation(fields: [projectId], references: [id])
+  createdBy          User    @relation("ReportedBugs", fields: [createdByUserId], references: [id])
+  assignedTo         User?   @relation("AssignedBugs", fields: [assignedToUserId], references: [id])
+
+  updates            BugStatusUpdate[]
+}
+
+model BugStatusUpdate {
+  id              String    @id @default(cuid())
+  bugId           String
+  status          BugStatus
+  fixCommitUrl    String?
+  comment         String?
+  createdByUserId String
+  createdAt       DateTime  @default(now())
+
+  bug             Bug  @relation(fields: [bugId], references: [id])
+  createdBy       User @relation(fields: [createdByUserId], references: [id])
+}
+
+
+model ProjectMember {
+  id        String @id @default(cuid())
+  projectId String
+  userId    String
+  role      Role
+
+  project Project @relation(fields: [projectId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([projectId, userId])
+}
