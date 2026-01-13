@@ -80,7 +80,7 @@ Frontend (API base url)
 env
 VITE_API_BASE=http://localhost:3001
 Backend
-În backend/.env există conexiunea la baza de date și secretul JWT.
+În backend/.env există conexiunea la baza de date și secretul JWT
 
 Endpoint-uri principale (REST)
 Auth
