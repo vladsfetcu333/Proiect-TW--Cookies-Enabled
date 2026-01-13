@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3001";
 
 export function setToken(token) {
   localStorage.setItem("token", token);
@@ -35,7 +35,21 @@ async function request(path, { method = "GET", body } = {}) {
 }
 
 export const api = {
+  // auth
   register: (payload) => request("/auth/register", { method: "POST", body: payload }),
   login: (payload) => request("/auth/login", { method: "POST", body: payload }),
   me: () => request("/auth/me"),
+
+  // projects
+  myProjects: () => request("/projects/my"),
+  createProject: (payload) => request("/projects", { method: "POST", body: payload }),
+  joinTester: (projectId) => request(`/projects/${projectId}/join-tester`, { method: "POST" }),
+
+  // bugs
+  listBugs: (projectId) => request(`/projects/${projectId}/bugs`),
+  createBug: (projectId, payload) =>
+    request(`/projects/${projectId}/bugs`, { method: "POST", body: payload }),
+  assignBugToMe: (bugId) => request(`/bugs/${bugId}/assign-to-me`, { method: "POST" }),
+  setBugStatus: (bugId, payload) =>
+    request(`/bugs/${bugId}/status`, { method: "POST", body: payload }),
 };

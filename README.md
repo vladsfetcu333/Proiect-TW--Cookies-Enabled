@@ -1,117 +1,109 @@
-# Proiect-TW--Cookies-Enabled
-BugTracker Pro este o aplicație web de tip Single Page Application destinată gestionării bug-urilor din proiecte software. Platforma facilitează colaborarea între membrii echipei (MP) și testeri (TST), oferind un flux clar pentru raportare, alocare și rezolvare a bug-urilor.
+# Bug Tracker (SPA + REST + Prisma)
 
-Funcționalități principale
+Aplicație web pentru gestionarea bug-urilor într-un proiect software.  
+Scopul este să permită comunicarea între membrii echipei: **MP (member/project member)** și **TST (tester)**.
 
-Autentificare pe bază de email
+## Funcționalități (cerințe proiect)
 
-Creare și administrare proiecte
+- Autentificare cu cont pe bază de email (register/login)
+- MP poate crea un proiect (cu repo URL) și devine automat MP în acel proiect
+- Un utilizator care nu e în proiect se poate adăuga ca **tester (TST)** la proiect
+- TST poate raporta un bug cu:
+  - severitate
+  - prioritate
+  - descriere
+  - link către commit (GitHub)
+- MP poate vedea bug-urile pentru proiectele lui
+- MP își poate aloca rezolvarea unui bug (un singur MP simultan)
+- MP poate marca bug-ul ca rezolvat (status + link către commit fix)
+- Sistem de permisiuni:
+  - MP: create/modify proiect, vede bugs, assign, update status
+  - TST: poate crea bug
 
-Înrolare ca tester la un proiect
+## Tehnologii folosite
 
-Adăugare bug (rol TST)
+### Frontend
 
-Vizualizare și alocare bug-uri (rol MP)
+- React (Single Page Application)
+- Vite (dev server/build)
+- Fetch API pentru comunicare cu backend
+- UI custom (CSS)
 
-Actualizare status al rezolvării, împreună cu un link către commit-ul de rezolvare
+### Backend
 
-Sistem de permisiuni diferențiat între MP și TST
+- Node.js + Express
+- REST API
+- JWT authentication (Bearer token)
+- Prisma ORM
+- PostgreSQL (Prisma Postgres / cloud)
 
-Arhitectură
+### Integrare externă
 
-Frontend: React (SPA)
+- GitHub API: validarea / listarea commit-urilor (folosit pentru link-urile de commit)
 
-Backend: Node.js + Express (REST API)
-
-ORM: Sequelize sau Prisma
-
-Bază de date: PostgreSQL
-
-Deployment: Railway sau Render
-
-Structura echipei
-
-Rachina Bianca – Documentație, baza de date, dashboard
-
-Sfetcu Vlad – Backend API, gestionarea proiectelor
-
-Simion David – Frontend UI, gestionarea bug-urilor
-
-
-
-# BugTracker Pro – Proiect Tehnologii Web
-
-Aplicatie web de tip Single Page Application (SPA) pentru gestionarea bug-urilor din proiecte software.
-
-## Tehnologii
-
-- **Frontend:** React (create-react-app)
-- **Backend:** Node.js + Express (REST API)
-- **Baza de date:** momentan in-memory (liste JS, PostgreSQL)
-- **Comunicare:** HTTP + JSON
+---
 
 ## Structura proiectului
 
-```text
-Proiect-TW--Cookies-Enabled
-├─ frontend   # aplicatia React (Dashboard, UI)
-└─ backend    # REST API Node + Express
-```
-## 1. Rulare backend (REST API)
+bug-tracker/
+backend/
+frontend/
 
-Backend-ul foloseste Node.js + Express.
+## Rulare locală (Development)
+
+### 1) Backend
+
+Într-un terminal:
 
 ```bash
 cd backend
 npm install
-npm start
-```
-Serverul porneste la: **http://localhost:4000**
+npm run dev
+Backend pornește pe: http://localhost:3001
+Health check: GET http://localhost:3001/health
 
-### Endpoint-uri:
+Ai nevoie de variabilele de mediu în backend/.env (DATABASE + JWT_SECRET etc).
 
-- `GET /` – test API  
-- `GET /api/projects` – lista proiectelor  
-- `POST /api/projects` – adauga proiect  
-- `GET /api/bugs` – lista bug-urilor  
-- `POST /api/bugs` – adauga bug  
-- `PATCH /api/bugs/:id` – modifica status + commitLink  
+2) Frontend
+În alt terminal:
 
----
-
-## 2. Rulare frontend (React)
-
-Intr-un alt terminal:
-
-```bash
+bash
 cd frontend
 npm install
-npm start
+npm run dev
+Frontend pornește pe http://localhost:5173 (sau portul pe care îl afișează Vite)
+
+Configurare env
+Frontend (API base url)
+În frontend/.env:
+
+env
+Copiază codul
+VITE_API_BASE=http://localhost:3001
+Backend
+În backend/.env există conexiunea la baza de date și secretul JWT.
+
+Endpoint-uri principale (REST)
+Auth
+POST /auth/register -> { email, password, name }
+
+POST /auth/login -> { email, password }
+
+GET /auth/me -> user curent (token required)
+
+Projects
+POST /projects (MP) -> create project
+
+GET /projects/my -> proiectele unde user-ul e membru
+
+POST /projects/:id/join-tester -> user devine TST (dacă nu e membru)
+
+Bugs
+POST /projects/:id/bugs (TST) -> create bug
+
+GET /projects/:id/bugs (MP) -> list bugs
+
+POST /bugs/:id/assign-to-me (MP) -> assign bug
+
+POST /bugs/:id/status (MP) -> set status / fix commit url
 ```
-Frontend-ul pornește la: http://localhost:3000 
-
-## 3. Testare rapida
-
-   Porneste backend-ul:
-- http://localhost:4000
-
-   Porneste frontend-ul:
-- http://localhost:3000
-
-
-## 4. Baza de date
-### Tabel Projects
-- id  
-- name  
-- description  
-
-### Tabel Bugs
-- id  
-- title  
-- description  
-- status  
-- projectId  
-- commitLink  
-
-
-

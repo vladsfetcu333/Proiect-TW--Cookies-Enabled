@@ -1,15 +1,40 @@
 /**
  * Project routes:
+ * - list my projects (member MP/TST)
  * - create project (creator becomes MP)
  * - join project as tester (TST)
+ * - update project (MP only)
  */
 const express = require("express");
 const { prisma } = require("../prismaClient");
 const { authRequired } = require("../middleware/authRequired");
 const { requireMpInProject } = require("../middleware/requireMpInProject");
 
-
 const router = express.Router();
+
+/**
+ * GET /projects/my
+ * Auth: required
+ * Returns projects where current user is a member (MP or TST)
+ */
+router.get("/my", authRequired, async (req, res) => {
+  try {
+    const memberships = await prisma.projectMember.findMany({
+      where: { userId: req.userId },
+      include: { project: true },
+    });
+
+    const projects = memberships.map((m) => ({
+      role: m.role,
+      project: m.project,
+    }));
+
+    return res.json({ projects });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error." });
+  }
+});
 
 /**
  * POST /projects
@@ -37,9 +62,7 @@ router.post("/", authRequired, async (req, res) => {
           },
         },
       },
-      include: {
-        members: true,
-      },
+      include: { members: true },
     });
 
     return res.status(201).json({ project });
@@ -58,17 +81,13 @@ router.post("/:id/join-tester", authRequired, async (req, res) => {
   try {
     const projectId = req.params.id;
 
-    // ensure project exists
     const project = await prisma.project.findUnique({ where: { id: projectId } });
     if (!project) {
       return res.status(404).json({ message: "Project not found." });
     }
 
-    // check membership
     const existing = await prisma.projectMember.findUnique({
-      where: {
-        projectId_userId: { projectId, userId: req.userId },
-      },
+      where: { projectId_userId: { projectId, userId: req.userId } },
     });
 
     if (existing) {
@@ -89,6 +108,7 @@ router.post("/:id/join-tester", authRequired, async (req, res) => {
     return res.status(500).json({ message: "Server error." });
   }
 });
+
 /**
  * PATCH /projects/:id
  * Body can include: { name?, repoUrl? }
@@ -117,6 +137,5 @@ router.patch("/:id", authRequired, requireMpInProject("id"), async (req, res) =>
     return res.status(500).json({ message: "Server error." });
   }
 });
-
 
 module.exports = { projectRoutes: router };
