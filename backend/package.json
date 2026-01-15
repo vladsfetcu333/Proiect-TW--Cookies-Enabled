@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
-  },
+  "dev": "nodemon src/index.js",
+  "start": "node src/index.js",
+  "postinstall": "prisma generate --schema=prisma/schema.prisma"
+}
+,
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -24,5 +26,8 @@
     "@types/node": "^25.0.6",
     "nodemon": "^3.1.11",
     "prisma": "^7.2.0"
-  }
+  },
+  "engines": {
+  "node": "20.x"
+}
 }
