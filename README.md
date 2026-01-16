@@ -1,4 +1,4 @@
-LINK ACTRE APLICATIE: https://proiect-tw-cookies-enabled.vercel.app/
+LINK CATRE APLICATIE: https://proiect-tw-cookies-enabled.vercel.app/
 # Bug Tracker (SPA + REST + Prisma)
 
 Aplicație web pentru gestionarea bug-urilor într-un proiect software.  
